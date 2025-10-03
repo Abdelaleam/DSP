@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class basic_op:
     def __init__(self,signal):
-        self.signal = np.array(signal,dtype=float)
+        self.signal = np.array(signal,dtype=int)
     @classmethod
     def read_signal(cls, path):
         signal = np.loadtxt(path, skiprows=3)
@@ -16,7 +16,7 @@ class basic_op:
             f.write(f"{len(self.signal)}\n")
             for row in self.signal:
                 index,value=row
-                f.write(f"{int(index)} {value:.2f}\n")
+                f.write(f"{int(index)} {value:}\n")
     def add_signals(self, other):
         unique_indicies = np.union1d(self.signal[:, 0], other.signal[:, 0])
         res = np.zeros((len(unique_indicies), 2))

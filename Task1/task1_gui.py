@@ -236,7 +236,7 @@ class Task1GUI:
         sig = self.get_target_signal()
         if sig is not None:
             try:
-                c = float(self.mult_entry.get())
+                c = int(self.mult_entry.get())
             except ValueError:
                 messagebox.showerror("Error", "Invalid multiply factor!")
                 return
@@ -247,7 +247,7 @@ class Task1GUI:
         sig = self.get_target_signal()
         if sig is not None:
             try:
-                c = float(self.delay_entry.get())
+                c = int(self.delay_entry.get())
             except ValueError:
                 messagebox.showerror("Error", "Invalid delay value!")
                 return
