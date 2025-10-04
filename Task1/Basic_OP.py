@@ -51,8 +51,8 @@ class basic_op:
         Y = self.signal[:, 1]
         ax.stem(X, Y, linefmt='b-', markerfmt='ro', basefmt='p-')
         ax.set_title(title)
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
+        ax.set_xlabel("t")
+        ax.set_ylabel("f(t)")
         ax.grid(True, alpha=0.3)
         if show_fig:
             plt.show()

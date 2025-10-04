@@ -10,7 +10,7 @@ class Task1GUI:
         self.home = home
         self.root = tk.Toplevel(root) 
         self.root.title("Task 1 - Signal Operations")
-        self.root.geometry("1200x700")  
+        self.root.geometry("1400x900")
         self.root.configure(bg="#2c3e50")
         self.root.protocol("WM_DELETE_WINDOW", self.back_to_home)
         self.signal1 = None
@@ -102,16 +102,16 @@ class Task1GUI:
         right_frame = tk.Frame(main_frame, bg="#2c3e50")
         right_frame.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True)
 
-        # Create plots 
-        self.fig = plt.figure(figsize=(8, 9), facecolor='#2c3e50')
+        # Create plots
+        self.fig = plt.figure(figsize=(14, 18), facecolor='#2c3e50')
         
         # Create 3 subplots 
         self.ax1 = plt.subplot(311)
         self.ax2 = plt.subplot(312)
         self.ax3 = plt.subplot(313)
         
-        # space between plots
-        plt.subplots_adjust(hspace=0.5)
+        # space between plots - increased for better visibility
+        plt.subplots_adjust(hspace=0.4, left=0.1, right=0.95, top=0.95, bottom=0.08)
         
         # Style for plots
         for ax in [self.ax1, self.ax2, self.ax3]:
@@ -168,6 +168,8 @@ class Task1GUI:
             self.signal1.visualize(self.ax1, "Signal 1")
         else:
             self.ax1.set_title("Signal 1", color='white')
+            self.ax1.set_xlabel("X", color='white')
+            self.ax1.set_ylabel("Y", color='white')
             self.ax1.text(0.5, 0.5, 'No Data', transform=self.ax1.transAxes, 
                          ha='center', va='center', fontsize=10, color='gray')
 
@@ -177,6 +179,8 @@ class Task1GUI:
             self.signal2.visualize(self.ax2, "Signal 2")
         else:
             self.ax2.set_title("Signal 2", color='white')
+            self.ax2.set_xlabel("X", color='white')
+            self.ax2.set_ylabel("Y", color='white')
             self.ax2.text(0.5, 0.5, 'No Data', transform=self.ax2.transAxes, 
                          ha='center', va='center', fontsize=10, color='gray')
 
@@ -186,6 +190,8 @@ class Task1GUI:
             self.result.visualize(self.ax3, "Result")
         else:
             self.ax3.set_title("Result", color='white')
+            self.ax3.set_xlabel("X", color='white')
+            self.ax3.set_ylabel("Y", color='white')
             self.ax3.text(0.5, 0.5, 'No Data', transform=self.ax3.transAxes, 
                          ha='center', va='center', fontsize=10, color='gray')
 
@@ -194,6 +200,8 @@ class Task1GUI:
             ax.set_facecolor('#34495e')
             ax.tick_params(colors='white')
             ax.title.set_color('white')
+            ax.xaxis.label.set_color('white')
+            ax.yaxis.label.set_color('white')
             for spine in ax.spines.values():
                 spine.set_color('white')
 
