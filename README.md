@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![Main Interface](snapshots/main.png)
+![Home Interface](snapshots/Home.png)
 
 *🎯 Digital Signal Processing application with GUI interface for signal operations*
 
@@ -38,4 +38,5 @@ Task 1 implements basic signal operations including:
 </div>
 
 ---
+
 
