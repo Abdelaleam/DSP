@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
 from Task1.task1_gui import Task1GUI
-from Task2.task2_gui import Task2GUI  
+from Task2.task2_gui import Task2GUI
+from Task3.task3_gui import Task3GUI
 import os
-
 
 class HomePage:
     def __init__(self, root):
@@ -23,25 +23,39 @@ class HomePage:
             print("No logo.ico found, skipping icon setup")
 
         self.title_label = tk.Label(
-            self.root, text="Welcome to DSP Program",
-            font=("Arial Black", 34), bg="#2c3e50", fg="#00ffcc"
+            self.root,
+            text="Welcome to DSP Program",
+            font=("Arial Black", 34),
+            bg="#2c3e50",
+            fg="#00ffcc"
         )
         self.title_label.place(relx=0.5, rely=0.1, anchor="center")
 
         self.task1_btn = self.create_button(
-            text="Task 1\n[Signal Operations]", bg="#1abc9c", hover="#16a085",
+            text="Task 1\n[Signal Operations]",
+            bg="#1abc9c", hover="#16a085",
             command=self.open_task1
         )
-        self.task1_btn.place(relx=0.05, rely=0.4, anchor="w", width=250, height=80)
+        self.task1_btn.place(relx=0.05, rely=0.35, anchor="w", width=250, height=80)
 
         self.task2_btn = self.create_button(
-            text="Task 2\n[Signal Generation]", bg="#3498db", hover="#2980b9",
+            text="Task 2\n[Signal Generation]",
+            bg="#3498db", hover="#2980b9",
             command=self.open_task2
         )
-        self.task2_btn.place(relx=0.05, rely=0.55, anchor="w", width=250, height=80)
+        self.task2_btn.place(relx=0.05, rely=0.50, anchor="w", width=250, height=80)
+
+        self.task3_btn = self.create_button(
+            text="Task 3\n[Signal Quantization & Encoding]",
+            bg="#9b59b6", hover="#8e44ad",
+            command=self.open_task3
+        )
+        self.task3_btn.config(font=("Arial", 10, "bold"))
+        self.task3_btn.place(relx=0.05, rely=0.65, anchor="w", width=250, height=80)
 
         self.exit_btn = self.create_button(
-            text="Exit", bg="#e74c3c", hover="#c0392b",
+            text="Exit",
+            bg="#e74c3c", hover="#c0392b",
             command=self.exit_program
         )
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
@@ -64,10 +78,13 @@ class HomePage:
         self.root.withdraw()
         Task2GUI(self.root, self)
 
+    def open_task3(self):
+        self.root.withdraw()
+        Task3GUI(self.root, self)
+
     def exit_program(self):
         self.root.quit()
         self.root.destroy()
-
 
 if __name__ == "__main__":
     root = tk.Tk()
