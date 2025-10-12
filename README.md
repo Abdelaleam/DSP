@@ -39,4 +39,19 @@ Task 1 implements basic signal operations including:
 
 ---
 
+## 🚀 Task 2
+
+Task 2 introduces **signal generation and visualization** for both continuous and discrete signals. Users can generate **sine** or **cosine** waves with adjustable amplitude, frequency, phase shift, and sampling rate, and compare two signals simultaneously.
+
+<div align="center">
+
+![Task 2 Interface](snapshots/Task2.png)
+
+*🌊 Task 2 interface showing continuous and discrete wave generation*
+
+</div>
+
+---
+
+
 

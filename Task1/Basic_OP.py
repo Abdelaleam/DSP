@@ -35,7 +35,7 @@ class basic_op:
         return self.add_signals(other.multiply(-1))
     def delay_signal(self,c):
         new_signal=self.signal.copy()
-        new_signal[:,0]+=c
+        new_signal[:,0]-=c
         return basic_op(new_signal)
     def folding(self):
         new_signal=self.signal.copy()

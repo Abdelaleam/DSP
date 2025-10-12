@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from .Basic_OP import basic_op   
 
@@ -94,7 +95,8 @@ class Task1GUI:
 
         # Folding button
         self.create_button(left_frame, "Folding", self.folding_signal, "#9b59b6", "#8e44ad").pack(fill="x", pady=3)
-
+        #compare button
+        self.create_button(left_frame, "Compare with File", self.compare_with_file, "#1abc9c", "#16a085").pack(fill="x", pady=3)
         # Back to home button
         self.create_button(left_frame, "Back to Home", self.back_to_home, "#7f8c8d", "#95a5a6").pack(fill="x", pady=10)
 
@@ -290,6 +292,35 @@ class Task1GUI:
         self.delay_entry.delete(0, tk.END)
         self.delay_entry.insert(0, "0")
         self.update_plot()
+    def compare_with_file(self):
+        if self.result is None:
+            messagebox.showerror("Error", "No result to compare!")
+            return
+        path = filedialog.askopenfilename(filetypes=[("Text files", "*.txt")])
+        if not path:
+            return
+        other_signal = basic_op.read_signal(path)
+        if other_signal is None:
+            messagebox.showerror("Error", "Failed to read the file!")
+            return
+        self.ax3.clear()
+        X1 = self.result.signal[:, 0]
+        Y1 = self.result.signal[:, 1]
+        self.ax3.stem(X1, Y1, linefmt='b-', markerfmt='bo', basefmt='b-', label='Result')
+        X2 = other_signal.signal[:, 0]
+        Y2 = other_signal.signal[:, 1]
+        self.ax3.stem(X2, Y2, linefmt='r-', markerfmt='ro', basefmt='r-', label='test Case')
+        self.ax3.set_title("Comparison", color='white')
+        self.ax3.set_xlabel("X", color='white')
+        self.ax3.set_ylabel("Y", color='white')
+        self.ax3.legend()
+        self.canvas.draw()
+        # Compare 
+        if np.array_equal(self.result.signal, other_signal.signal):
+            messagebox.showinfo("Success", "Result matches test case!")
+        else:
+            messagebox.showinfo("Notice", "Result does not match test case.")
+
 
     # return to home
     def back_to_home(self):
