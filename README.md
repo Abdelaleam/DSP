@@ -55,7 +55,7 @@ Task 2 introduces **signal generation and visualization** for both continuous an
 
 ## 🚀 Task 3
 
-Task 3 implements **signal quantization and encoding**. Users can load a discrete signal, quantize it using a specified number of bits or levels, visualize the original and quantized signals, view the average quantization error power, and save the encoded results (binary codes and quantized values).
+Task 3 implements **signal quantization and encoding**. Users can load a discrete signal, quantize it using a specified number of bits or levels, visualize the original and quantized signals, and view the quantization results in a table.
 
 <div align="center">
 
