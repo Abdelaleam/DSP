@@ -30,5 +30,5 @@ class quantization:
             num_bits = int(np.ceil(np.log2(num_levels)))    
         encoded_index = [format(index - 1, f'0{num_bits}b') for index in range_indices]
         encoded_result = np.column_stack((encoded_index, q_y))
-        return x,y,q_y,q_error,avg_power_err,encoded_result,range_indices
+        return x,y,q_y,q_error,avg_power_err,encoded_result,range_indices,delta
    

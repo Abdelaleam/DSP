@@ -148,7 +148,7 @@ class Task3GUI:
         try:
             num_bits = self.num_bits.get() if self.quant_mode.get() == "bits" else 0
             num_levels = self.num_levels.get() if self.quant_mode.get() == "levels" else 0
-            x, y, q_y, q_error, avg_err, encoded_result, indices = quantization.quantize_signal(
+            x, y, q_y, q_error, avg_err, encoded_result, indices,delta = quantization.quantize_signal(
                 self.signal, num_levels=num_levels, num_bits=num_bits
             )
             q_y = np.round(q_y, 2)
@@ -159,6 +159,7 @@ class Task3GUI:
             self.encoded_result = encoded_result
             self.indices = indices
             self.avg_err = avg_err
+            self.delta=delta
             self.update_table(x, y, q_y, q_error, encoded_result, indices, avg_err)
 
             old_stdout = sys.stdout
@@ -193,6 +194,12 @@ class Task3GUI:
         ))
         self.results_table.tag_configure('avg_row', background='#2c3e50', foreground='#f39c12')
         self.results_table.item(avg_row, tags=('avg_row',))
+
+        delta_row = self.results_table.insert("", "end", values=(
+            "Delta", "", "", f"{self.delta:.4f}", "", "", ""
+        ))
+        self.results_table.tag_configure('delta_row', background='#2c3e50', foreground='#e74c3c')
+        self.results_table.item(delta_row, tags=('delta_row',))
 
     def update_plots(self):
         self.ax1.clear(); self.ax2.clear(); self.ax3.clear()
