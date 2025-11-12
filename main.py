@@ -3,6 +3,7 @@ from tkinter import ttk
 from Task1.task1_gui import Task1GUI
 from Task2.task2_gui import Task2GUI
 from Task3.task3_gui import Task3GUI
+from Task4.task4_gui import Task4GUI
 import os
 
 class HomePage:
@@ -53,6 +54,13 @@ class HomePage:
         self.task3_btn.config(font=("Arial", 10, "bold"))
         self.task3_btn.place(relx=0.05, rely=0.65, anchor="w", width=250, height=80)
 
+        self.task4_btn = self.create_button(
+            text="Task 4\n[Signal Processing]",
+            bg="#e67e22", hover="#d35400",
+            command=self.open_task4
+        )
+        self.task4_btn.place(relx=0.05, rely=0.80, anchor="w", width=250, height=80)
+
         self.exit_btn = self.create_button(
             text="Exit",
             bg="#e74c3c", hover="#c0392b",
@@ -81,6 +89,10 @@ class HomePage:
     def open_task3(self):
         self.root.withdraw()
         Task3GUI(self.root, self)
+
+    def open_task4(self):
+        self.root.withdraw()
+        Task4GUI(self.root, self)
 
     def exit_program(self):
         self.root.quit()

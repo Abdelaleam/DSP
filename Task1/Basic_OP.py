@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 class basic_op:
     def __init__(self,signal):
-        self.signal = np.array(signal,dtype=int)
+        self.signal = np.array(signal,dtype=float)
     @classmethod
     def read_signal(cls, path):
         signal = np.loadtxt(path, skiprows=3)
