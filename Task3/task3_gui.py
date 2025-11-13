@@ -196,7 +196,7 @@ class Task3GUI:
         self.results_table.item(avg_row, tags=('avg_row',))
 
         delta_row = self.results_table.insert("", "end", values=(
-            "Delta", "", "", f"{self.delta:.4f}", "", "", ""
+            "Delta", f"{self.delta:.4f}", "", "", "", "", ""
         ))
         self.results_table.tag_configure('delta_row', background='#2c3e50', foreground='#e74c3c')
         self.results_table.item(delta_row, tags=('delta_row',))

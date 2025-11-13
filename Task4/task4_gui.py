@@ -5,12 +5,21 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
 import sys
 import os
+import importlib
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Task1 import basic_op
 from Task4.averaging import AveragingWindow
 from Task4.convolution import Convolution
 from Task4.sharpening import Sharpening
+
+# Import test functions
+test_module = importlib.import_module('Task4.DSP Task4 TEST functions')
+AveragingTest = test_module.AveragingTest
+SharpeningTest = test_module.SharpeningTest
+ConvolutionTest = test_module.ConvolutionTest
+AveragingTest2 = test_module.AveragingTest2
+SharpeningTest2 = test_module.SharpeningTest2
 
 class Task4GUI:
     def __init__(self, root, home):
@@ -75,6 +84,8 @@ class Task4GUI:
         
         ttk.Button(left_frame, text="Apply Averaging", command=self.apply_averaging).pack(fill="x", pady=10)
         ttk.Button(left_frame, text="Save Result", command=self.save_avg_result).pack(fill="x", pady=5)
+        ttk.Button(left_frame, text="Compare with Test Case 1", command=self.compare_avg_test1).pack(fill="x", pady=5)
+        ttk.Button(left_frame, text="Compare with Test Case 2", command=self.compare_avg_test2).pack(fill="x", pady=5)
         
         # Center panel - Plots
         center_frame = tk.Frame(avg_frame, bg="#2c3e50")
@@ -103,6 +114,7 @@ class Task4GUI:
         
         ttk.Button(left_frame, text="Apply Convolution", command=self.apply_convolution).pack(fill="x", pady=10)
         ttk.Button(left_frame, text="Save Result", command=self.save_conv_result).pack(fill="x", pady=5)
+        ttk.Button(left_frame, text="Compare with Test Case", command=self.compare_conv_test).pack(fill="x", pady=5)
         
         # Center panel - Plots
         center_frame = tk.Frame(conv_frame, bg="#2c3e50")
@@ -136,6 +148,8 @@ class Task4GUI:
         
         ttk.Button(left_frame, text="Apply Sharpening", command=self.apply_sharpening).pack(fill="x", pady=10)
         ttk.Button(left_frame, text="Save Result", command=self.save_sharp_result).pack(fill="x", pady=5)
+        ttk.Button(left_frame, text="Compare with Test Case 1", command=self.compare_sharp_test1).pack(fill="x", pady=5)
+        ttk.Button(left_frame, text="Compare with Test Case 2", command=self.compare_sharp_test2).pack(fill="x", pady=5)
         
         # Center panel - Plots
         center_frame = tk.Frame(sharp_frame, bg="#2c3e50")
@@ -359,6 +373,62 @@ class Task4GUI:
         
         self.sharp_canvas.draw()
     
+    # Comparison methods
+    def compare_avg_test1(self):
+        if self.avg_result is None:
+            messagebox.showwarning("No Result", "Please apply averaging first.")
+            return
+        try:
+            indices = self.avg_result.signal[:, 0].astype(int).tolist()
+            samples = self.avg_result.signal[:, 1].tolist()
+            AveragingTest(indices, samples)
+        except Exception as e:
+            messagebox.showerror("Error", f"Comparison failed:\n{e}")
+
+    def compare_avg_test2(self):
+        if self.avg_result is None:
+            messagebox.showwarning("No Result", "Please apply averaging first.")
+            return
+        try:
+            indices = self.avg_result.signal[:, 0].astype(int).tolist()
+            samples = self.avg_result.signal[:, 1].tolist()
+            AveragingTest2(indices, samples)
+        except Exception as e:
+            messagebox.showerror("Error", f"Comparison failed:\n{e}")
+
+    def compare_conv_test(self):
+        if self.conv_result is None:
+            messagebox.showwarning("No Result", "Please apply convolution first.")
+            return
+        try:
+            indices = self.conv_result.signal[:, 0].astype(int).tolist()
+            samples = self.conv_result.signal[:, 1].tolist()
+            ConvolutionTest(indices, samples)
+        except Exception as e:
+            messagebox.showerror("Error", f"Comparison failed:\n{e}")
+
+    def compare_sharp_test1(self):
+        if self.sharp_result is None:
+            messagebox.showwarning("No Result", "Please apply sharpening first.")
+            return
+        try:
+            indices = self.sharp_result.signal[:, 0].astype(int).tolist()
+            samples = self.sharp_result.signal[:, 1].tolist()
+            SharpeningTest(indices, samples)
+        except Exception as e:
+            messagebox.showerror("Error", f"Comparison failed:\n{e}")
+
+    def compare_sharp_test2(self):
+        if self.sharp_result is None:
+            messagebox.showwarning("No Result", "Please apply sharpening first.")
+            return
+        try:
+            indices = self.sharp_result.signal[:, 0].astype(int).tolist()
+            samples = self.sharp_result.signal[:, 1].tolist()
+            SharpeningTest2(indices, samples)
+        except Exception as e:
+            messagebox.showerror("Error", f"Comparison failed:\n{e}")
+
     def back_to_home(self):
         self.root.destroy()
         self.home.root.deiconify()
