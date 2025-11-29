@@ -4,6 +4,7 @@ from Task1.task1_gui import Task1GUI
 from Task2.task2_gui import Task2GUI
 from Task3.task3_gui import Task3GUI
 from Task4.task4_gui import Task4GUI
+from Task5.task5_gui import Task5GUI
 import os
 
 class HomePage:
@@ -68,6 +69,13 @@ class HomePage:
         )
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
 
+        self.task5_btn = self.create_button(
+            text="Task 5\n[Fourier Transform]",
+            bg="#f1c40f", hover="#f39c12",
+            command=self.open_task5
+        )
+        self.task5_btn.place(relx=0.05, rely=0.20, anchor="w", width=250, height=80)
+
     def create_button(self, text, bg, hover, command):
         btn = tk.Button(
             self.root, text=text, font=("Arial", 16, "bold"),
@@ -93,6 +101,10 @@ class HomePage:
     def open_task4(self):
         self.root.withdraw()
         Task4GUI(self.root, self)
+
+    def open_task5(self):
+        self.root.withdraw()
+        Task5GUI(self.root, self)
 
     def exit_program(self):
         self.root.quit()
