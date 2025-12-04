@@ -50,8 +50,8 @@ class Task5GUI:
         ttk.Radiobutton(mode_frame, text="IDFT", variable=self.mode, value="IDFT", command=self._on_mode_change).pack(side="left")
 
         ttk.Separator(left_frame, orient="horizontal").pack(fill="x", pady=8, padx=8)
-        ttk.Label(left_frame, text="DFT / Signal", background="#2c3e50", foreground="white").pack(anchor="w", padx=8)
-        ttk.Button(left_frame, text="Upload Signal (for DFT)", command=self.load_dft_signal).pack(fill="x", padx=8, pady=6)
+        ttk.Label(left_frame, text="DFT", background="#2c3e50", foreground="white").pack(anchor="w", padx=8)
+        ttk.Button(left_frame, text="Upload DFT Signal", command=self.load_dft_signal).pack(fill="x", padx=8, pady=6)
 
         ttk.Label(left_frame, text="Sampling Frequency (Hz):", background="#2c3e50", foreground="white").pack(anchor="w", padx=8)
         ttk.Entry(left_frame, textvariable=self.dft_fs).pack(fill="x", padx=8, pady=(2, 8))
@@ -61,15 +61,15 @@ class Task5GUI:
         ttk.Button(left_frame, text="Compare DFT Results", command=self.compare_dft_results).pack(fill="x", padx=8, pady=6)
 
         ttk.Separator(left_frame, orient="horizontal").pack(fill="x", pady=8, padx=8)
-        ttk.Label(left_frame, text="IDFT / DFT Data", background="#2c3e50", foreground="white").pack(anchor="w", padx=8)
-        ttk.Button(left_frame, text="Upload DFT Data (for IDFT)", command=self.load_idft_data).pack(fill="x", padx=8, pady=6)
+        ttk.Label(left_frame, text="IDFT", background="#2c3e50", foreground="white").pack(anchor="w", padx=8)
+        ttk.Button(left_frame, text="Upload IDFT Signal", command=self.load_idft_data).pack(fill="x", padx=8, pady=6)
         ttk.Button(left_frame, text="Apply IDFT", command=self.apply_idft).pack(fill="x", padx=8, pady=6)
         ttk.Button(left_frame, text="Save Reconstructed Signal", command=self.save_idft_result).pack(fill="x", padx=8, pady=6)
         ttk.Button(left_frame, text="Compare IDFT Results", command=self.compare_idft_results).pack(fill="x", padx=8, pady=6)
         ttk.Separator(left_frame, orient="horizontal").pack(fill="x", pady=8, padx=8)
         ttk.Button(left_frame, text="Clear Plots", command=self.clear_plots).pack(fill="x", padx=8, pady=6)
 
-        ttk.Button(left_frame, text="Close", command=self.root.destroy).pack(side="bottom", fill="x", padx=8, pady=8)
+        ttk.Button(left_frame, text="Back to Home", command=self.back_to_home).pack(side="bottom", fill="x", padx=8, pady=8)
 
         self.fig, (self.ax_time, self.ax_amp, self.ax_phase) = plt.subplots(3, 1, figsize=(10, 9))
         self.fig.tight_layout(pad=3)
@@ -170,15 +170,15 @@ class Task5GUI:
                 self.idft_amplitudes = arr[:, 0].astype(float)
                 self.idft_phases = np.zeros_like(self.idft_amplitudes, dtype=float)
             else:
-                raise ValueError("Unrecognized DFT data format.")
-            messagebox.showinfo("Loaded", "DFT data loaded for IDFT.")
+                raise ValueError("Unrecognized IDFT data format.")
+            messagebox.showinfo("Loaded", "loaded for IDFT data.")
             self.update_plots()
         except Exception as e:
             messagebox.showerror("Load error", str(e))
 
     def apply_idft(self):
         if self.idft_amplitudes is None or self.idft_phases is None:
-            messagebox.showwarning("No DFT data", "Upload DFT data for IDFT first.")
+            messagebox.showwarning("No DFT data", "Upload IDFT data first.")
             return
         try:
             amps = [float(a) for a in np.asarray(self.idft_amplitudes).flatten()]
@@ -235,7 +235,7 @@ class Task5GUI:
         self._style_single_axis(self.ax_phase)
         self.ax_phase.set_title("Frequency vs Phase")
         self.ax_phase.set_xlabel("Frequency (Hz)")
-        self.ax_phase.set_ylabel("Phase (radians)")
+        self.ax_phase.set_ylabel("Phase shift")
         self.ax_phase.axhline(0, color="k")
 
     def _style_single_axis(self, ax):
@@ -253,28 +253,50 @@ class Task5GUI:
         self.ax_phase_clear()
 
         if self.mode.get() == "DFT":
+            try:
+                current_fs = float(self.dft_fs.get()) if self.dft_fs.get() else 1.0
+            except Exception:
+                current_fs = 1.0
+
             if self.dft_signal is not None:
                 x = np.asarray(self.dft_signal.signal[:, 0], dtype=float)
                 y = np.asarray(self.dft_signal.signal[:, 1], dtype=float)
                 self.ax_time.stem(x, y, linefmt='b-', markerfmt='ro', basefmt='k-')
-            if self.dft_freq_bins is not None and self.dft_amplitudes is not None:
-                self.ax_amp.stem(self.dft_freq_bins, self.dft_amplitudes, linefmt='g-', markerfmt='go', basefmt='k-')
-            if self.dft_freq_bins is not None and self.dft_phases is not None:
-                self.ax_phase.stem(self.dft_freq_bins, self.dft_phases, linefmt='y-', markerfmt='yo', basefmt='k-')
-        else:
+
+            if self.dft_amplitudes is not None:
+                N = len(self.dft_amplitudes)
+                freq_bins = np.arange(N) * (current_fs / N)
+                self.ax_amp.stem(freq_bins, self.dft_amplitudes, linefmt='g-', markerfmt='go', basefmt='k-')
+                self.ax_amp.relim()
+                self.ax_amp.autoscale_view()
+
+            if self.dft_phases is not None:
+                Np = len(self.dft_phases)
+                freq_bins_p = np.arange(Np) * (current_fs / max(1, Np))
+                self.ax_phase.stem(freq_bins_p, self.dft_phases, linefmt='y-', markerfmt='yo', basefmt='k-')
+                self.ax_phase.relim()
+                self.ax_phase.autoscale_view()
+
+        elif self.mode.get() == "IDFT":
+            try:
+                idft_fs = float(self.dft_fs.get()) if self.dft_fs.get() else 1.0
+            except Exception:
+                idft_fs = 1.0
+
             if self.idft_result is not None:
                 indices = np.arange(len(self.idft_result))
                 self.ax_time.stem(indices, self.idft_result, linefmt='b-', markerfmt='ro', basefmt='k-')
             if self.idft_amplitudes is not None:
                 N = len(self.idft_amplitudes)
-                fs = float(self.dft_fs.get()) if self.dft_fs.get() else 1.0
-                freq_bins = np.arange(N) * (fs / N)
+                freq_bins = np.arange(N) * (idft_fs / N)
                 self.ax_amp.stem(freq_bins, self.idft_amplitudes, linefmt='g-', markerfmt='go', basefmt='k-')
             if self.idft_phases is not None:
                 N = len(self.idft_phases)
-                fs = float(self.dft_fs.get()) if self.dft_fs.get() else 1.0
-                freq_bins = np.arange(N) * (fs / N)
+                freq_bins = np.arange(N) * (idft_fs / N)
                 self.ax_phase.stem(freq_bins, self.idft_phases, linefmt='y-', markerfmt='yo', basefmt='k-')
+        else:
+            pass
+        
 
         self.canvas.draw()
 
@@ -314,7 +336,8 @@ class Task5GUI:
                 rounded_expected_phases
             )
             if amplitude_match and phase_match:
-                messagebox.showinfo("Comparison Result", "DFT results match the expected output!")
+                message=f"Amplitude Match: {amplitude_match}\nPhase Match: {phase_match}"
+                messagebox.showinfo("Comparison Result", "DFT results match the expected output!\n" + message)
             else:
                 messagebox.showwarning("Comparison Result", 
                                     f"DFT results do not match the expected output.\n"
@@ -355,7 +378,8 @@ class Task5GUI:
             )
             
             if signal_match:
-                messagebox.showinfo("Comparison Result", "IDFT results match the expected output!")
+                message=f"Signal Match: {signal_match}"
+                messagebox.showinfo("Comparison Result", "IDFT results match the expected output! \n" + message)
             else:
                 messagebox.showwarning("Comparison Result", 
                                     f"IDFT results do not match the expected output.\n"

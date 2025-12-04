@@ -7,7 +7,6 @@ class basic_op:
         self.signal = np.array(signal,dtype=float)
     @classmethod
     def read_signal(cls, path):
-        # Define converters to handle bytes, strip 'f' suffix, and convert to float
         converters = {0: lambda s: float(s.decode().rstrip('f')), 1: lambda s: float(s.decode().rstrip('f'))}
         signal = np.loadtxt(path, skiprows=3, converters=converters)
         return cls(signal)

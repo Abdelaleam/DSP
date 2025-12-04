@@ -21,9 +21,9 @@ class Fourier:
                 res+= signal[n]*np.exp(exp_term)
             amplitudes.append(abs(res))
             phases.append(np.angle(res))
-        if fs:
-            freq_bins=[k*fs/N for k in range(N)]
-            return freq_bins,amplitudes,phases
+        # if fs:
+        #     freq_bins=[k*fs/N for k in range(N)]
+        #     return freq_bins,amplitudes,phases
         return amplitudes,phases
     @staticmethod
     def IDFT(amplitudes,phases):

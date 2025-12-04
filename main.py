@@ -38,14 +38,14 @@ class HomePage:
             bg="#1abc9c", hover="#16a085",
             command=self.open_task1
         )
-        self.task1_btn.place(relx=0.05, rely=0.35, anchor="w", width=250, height=80)
+        self.task1_btn.place(relx=0.05, rely=0.20, anchor="w", width=250, height=80)
 
         self.task2_btn = self.create_button(
             text="Task 2\n[Signal Generation]",
             bg="#3498db", hover="#2980b9",
             command=self.open_task2
         )
-        self.task2_btn.place(relx=0.05, rely=0.50, anchor="w", width=250, height=80)
+        self.task2_btn.place(relx=0.05, rely=0.35, anchor="w", width=250, height=80)
 
         self.task3_btn = self.create_button(
             text="Task 3\n[Signal Quantization & Encoding]",
@@ -53,28 +53,29 @@ class HomePage:
             command=self.open_task3
         )
         self.task3_btn.config(font=("Arial", 10, "bold"))
-        self.task3_btn.place(relx=0.05, rely=0.65, anchor="w", width=250, height=80)
+        self.task3_btn.place(relx=0.05, rely=0.50, anchor="w", width=250, height=80)
 
         self.task4_btn = self.create_button(
             text="Task 4\n[Signal Processing]",
             bg="#e67e22", hover="#d35400",
             command=self.open_task4
         )
-        self.task4_btn.place(relx=0.05, rely=0.80, anchor="w", width=250, height=80)
+        self.task4_btn.place(relx=0.05, rely=0.65, anchor="w", width=250, height=80)
 
         self.exit_btn = self.create_button(
             text="Exit",
             bg="#e74c3c", hover="#c0392b",
             command=self.exit_program
         )
-        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
-
         self.task5_btn = self.create_button(
             text="Task 5\n[Fourier Transform]",
             bg="#f1c40f", hover="#f39c12",
             command=self.open_task5
         )
-        self.task5_btn.place(relx=0.05, rely=0.20, anchor="w", width=250, height=80)
+        self.task5_btn.place(relx=0.05, rely=0.80, anchor="w", width=250, height=80)
+        self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
+
+        
 
     def create_button(self, text, bg, hover, command):
         btn = tk.Button(
