@@ -5,6 +5,7 @@ from Task2.task2_gui import Task2GUI
 from Task3.task3_gui import Task3GUI
 from Task4.task4_gui import Task4GUI
 from Task5.task5_gui import Task5GUI
+from Task7.task7_gui import Task7GUI
 import os
 
 class HomePage:
@@ -62,17 +63,25 @@ class HomePage:
         )
         self.task4_btn.place(relx=0.05, rely=0.65, anchor="w", width=250, height=80)
 
-        self.exit_btn = self.create_button(
-            text="Exit",
-            bg="#e74c3c", hover="#c0392b",
-            command=self.exit_program
-        )
         self.task5_btn = self.create_button(
             text="Task 5\n[Fourier Transform]",
             bg="#f1c40f", hover="#f39c12",
             command=self.open_task5
         )
         self.task5_btn.place(relx=0.05, rely=0.80, anchor="w", width=250, height=80)
+
+        self.task7_btn = self.create_button(
+            text="Task 7\n[FIR Filter]",
+            bg="#27ae60", hover="#229954",
+            command=self.open_task7
+        )
+        self.task7_btn.place(relx=0.70, rely=0.20, anchor="w", width=250, height=80)
+
+        self.exit_btn = self.create_button(
+            text="Exit",
+            bg="#e74c3c", hover="#c0392b",
+            command=self.exit_program
+        )
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
 
         
@@ -106,6 +115,10 @@ class HomePage:
     def open_task5(self):
         self.root.withdraw()
         Task5GUI(self.root, self)
+
+    def open_task7(self):
+        self.root.withdraw()
+        Task7GUI(self.root, self)
 
     def exit_program(self):
         self.root.quit()
