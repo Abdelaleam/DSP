@@ -38,7 +38,7 @@ class Fourier:
                 exp_term= 2j * math.pi * k * n / N
                 res+= xk * np.exp(exp_term)
             res=res/N
-            signal.append(round(res.real))
+            signal.append(res.real)
         return signal
     
     

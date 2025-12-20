@@ -7,6 +7,47 @@ from FIR import FIR
 from Task4.convolution import Convolution
 from Task5.Fourier import Fourier
 
+
+
+def Compare_Signals(file_name,Your_indices,Your_samples):      
+    expected_indices=[]
+    expected_samples=[]
+    with open(file_name, 'r') as f:
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        line = f.readline()
+        while line:
+            # process line
+            L=line.strip()
+            if len(L.split(' '))==2:
+                L=line.split(' ')
+                V1=int(L[0])
+                V2=float(L[1])
+                expected_indices.append(V1)
+                expected_samples.append(V2)
+                line = f.readline()
+            else:
+                break
+    print("Current Output Test file is: ")
+    print(file_name)
+    print("\n")
+    if (len(expected_samples)!=len(Your_samples)) and (len(expected_indices)!=len(Your_indices)):
+        print("Test case failed, your signal have different length from the expected one")
+        return
+    for i in range(len(Your_indices)):
+        if(Your_indices[i]!=expected_indices[i]):
+            print("Test case failed, your signal have different indicies from the expected one") 
+            return
+    for i in range(len(expected_samples)):
+        if abs(Your_samples[i] - expected_samples[i]) < 0.16:
+            continue
+        else:
+            print("Test case failed, your signal have different values from the expected one") 
+            return
+    print("Test case passed successfully")
+
+
 def parse_specs(filepath):
     specs = {}
     with open(filepath, 'r') as f:
@@ -105,19 +146,10 @@ def test_case_1():
     else:
         print(f"Unknown filter type: {filter_type}")
         return
-    expected = parse_expected_coeffs('test_cases/Testcase 1/LPFCoeff.txt')
-    
-    if len(h) != len(expected):
-        print(f"LENGTH MISMATCH: computed={len(h)}, expected={len(expected)}")
-    else:
-        print(f"Length matches: {len(h)}")
-    
-    min_len = min(len(h), len(expected))
-    h_trimmed = h[:min_len]
-    expected_trimmed = expected[:min_len]
-    
-    max_error = np.max(np.abs(h_trimmed - expected_trimmed))
-    print(f"Max absolute error: {max_error:.10f}")
+    M = (len(h) - 1) // 2
+    h_indices = list(range(-M, M + 1))
+    h_samples = h.tolist()
+    Compare_Signals('test_cases/Testcase 1/LPFCoeff.txt', h_indices, h_samples)
 
 def test_case_2():
     print(f"\n=== Test Case 2: LPF Signal Filtering ===")
@@ -156,20 +188,19 @@ def test_case_2():
     signal_h = np.column_stack((h_indices, h))
     
     result_conv = Convolution.convolve(signal_x, signal_h)
-    y_indices_conv = result_conv.signal[:, 0].astype(int)
-    y_values_conv = result_conv.signal[:, 1]
+    y_indices_conv = result_conv.signal[:, 0].astype(int).tolist()
+    y_values_conv = result_conv.signal[:, 1].tolist()
     print(f"  Output signal length: {len(y_values_conv)}")
-    conv_error = compare_with_expected(y_values_conv, y_indices_conv, expected_values, expected_indices, "Convolution")
+    Compare_Signals('test_cases/Testcase 2/ecg_low_pass_filtered.txt', y_indices_conv, y_values_conv)
     
     # Method 2: DFT/IDFT
     print("\n[Method 2: DFT/IDFT]")
     y_values_dft = filter_with_dft_idft(x_values, h)
     first_idx = int(x_indices[0]) + (-M)
-    y_indices_dft = np.arange(first_idx, first_idx + len(y_values_dft))
-    print(f"  Output signal length: {len(y_values_dft)}")
-    dft_error = compare_with_expected(y_values_dft, y_indices_dft, expected_values, expected_indices, "DFT/IDFT")
-    
-    print(f"\n{'TEST PASSED!' if conv_error < 1.0 and dft_error < 10.0 else 'TEST FAILED'}")
+    y_indices_dft = list(range(first_idx, first_idx + len(y_values_dft)))
+    y_values_dft_list = y_values_dft.tolist()
+    print(f"  Output signal length: {len(y_values_dft_list)}")
+    Compare_Signals('test_cases/Testcase 2/ecg_low_pass_filtered.txt', y_indices_dft, y_values_dft_list)
 
 def test_case_3():
     specs = parse_specs('test_cases/Testcase 3/Filter Specifications.txt')    
@@ -192,25 +223,12 @@ def test_case_3():
         return
     
     print(f"Filter length: {len(h)}")
-    expected = parse_expected_coeffs('test_cases/Testcase 3/HPFCoefficients.txt')
-    print(f"Expected length: {len(expected)}")
     
-    if len(h) != len(expected):
-        print(f"LENGTH MISMATCH: computed={len(h)}, expected={len(expected)}")
-    else:
-        print(f"Length matches: {len(h)}")
-    
-    min_len = min(len(h), len(expected))
-    h_trimmed = h[:min_len]
-    expected_trimmed = expected[:min_len]
-    
-    max_error = np.max(np.abs(h_trimmed - expected_trimmed))
-    print(f"Max absolute error: {max_error:.10f}")
-    
-    if max_error < 0.001:
-        print("TEST PASSED!")
-    else:
-        print("TEST FAILED")
+    # Use Compare_Signals function - indices centered at 0
+    M = (len(h) - 1) // 2
+    h_indices = list(range(-M, M + 1))
+    h_samples = h.tolist()
+    Compare_Signals('test_cases/Testcase 3/HPFCoefficients.txt', h_indices, h_samples)
 
 def test_case_4():
     print(f"\n=== Test Case 4: HPF Signal Filtering (Blackman Window) ===")
@@ -249,20 +267,19 @@ def test_case_4():
     signal_h = np.column_stack((h_indices, h))
     
     result_conv = Convolution.convolve(signal_x, signal_h)
-    y_indices_conv = result_conv.signal[:, 0].astype(int)
-    y_values_conv = result_conv.signal[:, 1]
+    y_indices_conv = result_conv.signal[:, 0].astype(int).tolist()
+    y_values_conv = result_conv.signal[:, 1].tolist()
     print(f"  Output signal length: {len(y_values_conv)}")
-    conv_error = compare_with_expected(y_values_conv, y_indices_conv, expected_values, expected_indices, "Convolution")
+    Compare_Signals('test_cases/Testcase 4/ecg_high_pass_filtered.txt', y_indices_conv, y_values_conv)
     
     # Method 2: DFT/IDFT
     print("\n[Method 2: DFT/IDFT]")
     y_values_dft = filter_with_dft_idft(x_values, h)
     first_idx = int(x_indices[0]) + (-M)
-    y_indices_dft = np.arange(first_idx, first_idx + len(y_values_dft))
-    print(f"  Output signal length: {len(y_values_dft)}")
-    dft_error = compare_with_expected(y_values_dft, y_indices_dft, expected_values, expected_indices, "DFT/IDFT")
-    
-    print(f"\n{'TEST PASSED!' if conv_error < 1.0 and dft_error < 10.0 else 'TEST FAILED'}")
+    y_indices_dft = list(range(first_idx, first_idx + len(y_values_dft)))
+    y_values_dft_list = y_values_dft.tolist()
+    print(f"  Output signal length: {len(y_values_dft_list)}")
+    Compare_Signals('test_cases/Testcase 4/ecg_high_pass_filtered.txt', y_indices_dft, y_values_dft_list)
 
 def test_case_5():
     """Test Case 5: Band Pass Filter Coefficients"""
@@ -281,25 +298,12 @@ def test_case_5():
     h = FIR.fir_band_pass(Fs, F1, F2, transition_band, stop_attenuation)
     
     print(f"Filter length: {len(h)}")
-    expected = parse_expected_coeffs('test_cases/Testcase 5/BPFCoefficients.txt')
-    print(f"Expected length: {len(expected)}")
     
-    if len(h) != len(expected):
-        print(f"LENGTH MISMATCH: computed={len(h)}, expected={len(expected)}")
-    else:
-        print(f"Length matches: {len(h)}")
-    
-    min_len = min(len(h), len(expected))
-    h_trimmed = h[:min_len]
-    expected_trimmed = expected[:min_len]
-    
-    max_error = np.max(np.abs(h_trimmed - expected_trimmed))
-    print(f"Max absolute error: {max_error:.10f}")
-    
-    if max_error < 0.001:
-        print("TEST PASSED!")
-    else:
-        print("TEST FAILED")
+    # Use Compare_Signals function - indices centered at 0
+    M = (len(h) - 1) // 2
+    h_indices = list(range(-M, M + 1))
+    h_samples = h.tolist()
+    Compare_Signals('test_cases/Testcase 5/BPFCoefficients.txt', h_indices, h_samples)
 
 def test_case_6():
     """Test Case 6: Band Pass Filter Signal Filtering"""
@@ -334,20 +338,19 @@ def test_case_6():
     signal_h = np.column_stack((h_indices, h))
     
     result_conv = Convolution.convolve(signal_x, signal_h)
-    y_indices_conv = result_conv.signal[:, 0].astype(int)
-    y_values_conv = result_conv.signal[:, 1]
+    y_indices_conv = result_conv.signal[:, 0].astype(int).tolist()
+    y_values_conv = result_conv.signal[:, 1].tolist()
     print(f"  Output signal length: {len(y_values_conv)}")
-    conv_error = compare_with_expected(y_values_conv, y_indices_conv, expected_values, expected_indices, "Convolution")
+    Compare_Signals('test_cases/Testcase 6/ecg_band_pass_filtered.txt', y_indices_conv, y_values_conv)
     
     # Method 2: DFT/IDFT
     print("\n[Method 2: DFT/IDFT]")
     y_values_dft = filter_with_dft_idft(x_values, h)
     first_idx = int(x_indices[0]) + (-M)
-    y_indices_dft = np.arange(first_idx, first_idx + len(y_values_dft))
-    print(f"  Output signal length: {len(y_values_dft)}")
-    dft_error = compare_with_expected(y_values_dft, y_indices_dft, expected_values, expected_indices, "DFT/IDFT")
-    
-    print(f"\n{'TEST PASSED!' if conv_error < 1.0 and dft_error < 10.0 else 'TEST FAILED'}")
+    y_indices_dft = list(range(first_idx, first_idx + len(y_values_dft)))
+    y_values_dft_list = y_values_dft.tolist()
+    print(f"  Output signal length: {len(y_values_dft_list)}")
+    Compare_Signals('test_cases/Testcase 6/ecg_band_pass_filtered.txt', y_indices_dft, y_values_dft_list)
 
 def test_case_7():
     """Test Case 7: Band Stop Filter Coefficients"""
@@ -366,25 +369,12 @@ def test_case_7():
     h = FIR.fir_band_stop(Fs, F1, F2, transition_band, stop_attenuation)
     
     print(f"Filter length: {len(h)}")
-    expected = parse_expected_coeffs('test_cases/Testcase 7/BSFCoefficients.txt')
-    print(f"Expected length: {len(expected)}")
     
-    if len(h) != len(expected):
-        print(f"LENGTH MISMATCH: computed={len(h)}, expected={len(expected)}")
-    else:
-        print(f"Length matches: {len(h)}")
-    
-    min_len = min(len(h), len(expected))
-    h_trimmed = h[:min_len]
-    expected_trimmed = expected[:min_len]
-    
-    max_error = np.max(np.abs(h_trimmed - expected_trimmed))
-    print(f"Max absolute error: {max_error:.10f}")
-    
-    if max_error < 0.001:
-        print("TEST PASSED!")
-    else:
-        print("TEST FAILED")
+    # Use Compare_Signals function - indices centered at 0
+    M = (len(h) - 1) // 2
+    h_indices = list(range(-M, M + 1))
+    h_samples = h.tolist()
+    Compare_Signals('test_cases/Testcase 7/BSFCoefficients.txt', h_indices, h_samples)
 
 def test_case_8():
     """Test Case 8: Band Stop Filter Signal Filtering"""
@@ -419,20 +409,19 @@ def test_case_8():
     signal_h = np.column_stack((h_indices, h))
     
     result_conv = Convolution.convolve(signal_x, signal_h)
-    y_indices_conv = result_conv.signal[:, 0].astype(int)
-    y_values_conv = result_conv.signal[:, 1]
+    y_indices_conv = result_conv.signal[:, 0].astype(int).tolist()
+    y_values_conv = result_conv.signal[:, 1].tolist()
     print(f"  Output signal length: {len(y_values_conv)}")
-    conv_error = compare_with_expected(y_values_conv, y_indices_conv, expected_values, expected_indices, "Convolution")
+    Compare_Signals('test_cases/Testcase 8/ecg_band_stop_filtered.txt', y_indices_conv, y_values_conv)
     
     # Method 2: DFT/IDFT
     print("\n[Method 2: DFT/IDFT]")
     y_values_dft = filter_with_dft_idft(x_values, h)
     first_idx = int(x_indices[0]) + (-M)
-    y_indices_dft = np.arange(first_idx, first_idx + len(y_values_dft))
-    print(f"  Output signal length: {len(y_values_dft)}")
-    dft_error = compare_with_expected(y_values_dft, y_indices_dft, expected_values, expected_indices, "DFT/IDFT")
-    
-    print(f"\n{'TEST PASSED!' if conv_error < 1.0 and dft_error < 10.0 else 'TEST FAILED'}")
+    y_indices_dft = list(range(first_idx, first_idx + len(y_values_dft)))
+    y_values_dft_list = y_values_dft.tolist()
+    print(f"  Output signal length: {len(y_values_dft_list)}")
+    Compare_Signals('test_cases/Testcase 8/ecg_band_stop_filtered.txt', y_indices_dft, y_values_dft_list)
 
 def main():
     test_case_1()
