@@ -5,6 +5,7 @@ from Task2.task2_gui import Task2GUI
 from Task3.task3_gui import Task3GUI
 from Task4.task4_gui import Task4GUI
 from Task5.task5_gui import Task5GUI
+from Task6.task6_gui import Task6GUI
 import os
 
 class HomePage:
@@ -75,6 +76,13 @@ class HomePage:
         self.task5_btn.place(relx=0.05, rely=0.80, anchor="w", width=250, height=80)
         self.exit_btn.place(relx=0.95, rely=0.95, anchor="se", width=200, height=50)
 
+        self.task6_btn = self.create_button(
+            text="Task 6\n[Correlation]",
+            bg="#8e44ad", hover="#9b59b6", 
+            command=self.open_task6
+        )
+        self.task6_btn.place(relx=0.55, rely=0.20, anchor="w", width=250, height=80)
+
         
 
     def create_button(self, text, bg, hover, command):
@@ -106,6 +114,10 @@ class HomePage:
     def open_task5(self):
         self.root.withdraw()
         Task5GUI(self.root, self)
+
+    def open_task6(self):
+        self.root.withdraw()
+        Task6GUI(self.root, self)
 
     def exit_program(self):
         self.root.quit()

@@ -7,8 +7,23 @@ class basic_op:
         self.signal = np.array(signal,dtype=float)
     @classmethod
     def read_signal(cls, path):
-        converters = {0: lambda s: float(s.decode().rstrip('f')), 1: lambda s: float(s.decode().rstrip('f'))}
-        signal = np.loadtxt(path, skiprows=3, converters=converters)
+        try:
+            converters = {0: lambda s: float(s.decode().rstrip('f')), 1: lambda s: float(s.decode().rstrip('f'))}
+            signal = np.loadtxt(path, skiprows=3, converters=converters)
+        except:
+             try:
+                 raw_signal = np.loadtxt(path)
+                 if raw_signal.ndim == 1:
+                     indices = np.arange(len(raw_signal))
+                     signal = np.column_stack((indices, raw_signal))
+                 else:
+                     signal = raw_signal
+             except Exception as e:
+                 signal = np.loadtxt(path)
+                 if signal.ndim == 1:
+                     indices = np.arange(len(signal))
+                     signal = np.column_stack((indices, signal))
+
         return cls(signal)
     def save_signal(self,path):
         with open(path,"w")as f:
